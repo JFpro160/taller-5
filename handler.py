@@ -27,8 +27,10 @@ def get_secret_from_lambda(event, context):
 
     response = requests.get(api_url, headers=headers)
 
+    # Incluimos el mensaje en la respuesta que se verá en Postman
+    success_message = f"Se accedió a la API con API Key exitosamente mediante el secreto. Mensaje obtenido de la API: {response.text}"
+
     return {
         'statusCode': 200,
-        'body': response.text
+        'body': success_message
     }
-
