@@ -1,0 +1,23 @@
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+
+# Serverless
+.serverless/
+
+# Python
+*.pyc
+__pycache__/
+
+# Logs
+*.log
+
+# Archivos de entorno
+.env
+
+# Archivos temporales de editor
+.vscode/
+.idea/
+*.swp
+

@@ -1,0 +1,30 @@
+service: api-key-secrets-service
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "secretsmanager:GetSecretValue"
+      Resource: "arn:aws:secretsmanager:us-east-1:123456789123:secret:api-key-secret-abCDeF"  # ARN de tu secreto
+  role: arn:aws:iam::123456789123:role/LabRole  # ARN de tu LabRole
+
+functions:
+  getSecretFromApi:
+    handler: handler.get_secret_from_lambda
+    environment:
+      SECRET_NAME: "api-key-secret"  # Nombre del secreto en Secrets Manager
+    events:
+      - http:
+          path: /
+          method: get
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+

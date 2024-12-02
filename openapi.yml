@@ -1,0 +1,91 @@
+openapi: "3.0.1"
+info:
+  title: "API con API Key"
+  description: "Esta es una API que requiere una clave API para acceder a sus recursos."
+  version: "2024-12-01T20:55:37Z"
+servers:
+  - url: "https://{apiId}.execute-api.us-east-1.amazonaws.com/{basePath}"
+    variables:
+      apiId:
+        default: "ID de la API"
+      basePath:
+        default: "dev"
+      apiKey:
+        default: "API Key"
+paths:
+  /:
+    get:
+      summary: "Ruta raíz que requiere una API Key"
+      description: "Este endpoint en la raíz verifica si la API Key proporcionada es válida. Si la clave es correcta, se devuelve una respuesta exitosa."
+      responses:
+        "200":
+          description: "Respuesta exitosa. La API Key es válida."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "404":
+          description: "Not Found - Ruta no válida o no definida."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ruta no válida."
+      security:
+        - api_key: []
+      x-amazon-apigateway-integration:
+        responses:
+          "200":
+            statusCode: "200"
+            responseTemplates:
+              application/json: '{"message": "API Key válida. Respuesta exitosa."}'
+          "404":
+            statusCode: "404"
+            responseTemplates:
+              application/json: '{"message": "Ruta no válida."}'
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+
+  # Cualquier ruta no definida
+  "/{proxy+}":
+    get:
+      summary: "Ruta no definida"
+      description: "Esta ruta no está definida en la API. Verifique la ruta o el método."
+      responses:
+        "404":
+          description: "Not Found - La ruta solicitada no está definida en esta API."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ruta no válida. Por favor, verifique la ruta."
+      x-amazon-apigateway-integration:
+        responses:
+          "404":
+            statusCode: "404"
+            responseTemplates:
+              application/json: '{"message": "Ruta no válida. Esta ruta no está definida en la API."}'
+        requestTemplates:
+          application/json: "{\"statusCode\": 404}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+
+components:
+  schemas:
+    Empty:
+      type: "object"
+      properties: {}
+  securitySchemes:
+    api_key:
+      type: "apiKey"
+      name: "x-api-key"
+      in: "header"
+
