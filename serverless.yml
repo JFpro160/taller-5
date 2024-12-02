@@ -1,4 +1,4 @@
-service: api-key-secrets-service
+service: API-Secreto
 
 provider:
   name: aws
